@@ -15,11 +15,17 @@
 	<description>MCP example</description>
 	<url/>
 	<licenses>
-        <license>MIT</license>
+		<license>
+			<name>MIT</name>
+			<url>https://opensource.org/licenses/MIT</url>
+		</license>
 	</licenses>
 	<developers>
-        <developer>Hans Kruse</developer>
-		<developer/>
+		<developer>
+			<name>Hans Kruse</name>
+			<email>hanskruse@hanskruse.eu</email>
+			<url>https://hanskruse.eu</url>
+		</developer>
 	</developers>
 	<properties>
 		<java.version>25</java.version>
