@@ -7,6 +7,9 @@ import org.springaicommunity.mcp.annotation.McpToolParam;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Component
 public class ExampleTools {
@@ -15,28 +18,37 @@ public class ExampleTools {
 
     //tools
 
-    @McpTool(name = "hello world", description = "Just returns a Hello world")
+    @McpTool(name = "getHelloWorld", description = "Returns the string 'Hello, World!'. Useful for testing connectivity.")
     public String helloWorld() {
         logger.info("hello world called");
         return "Hello, Word!";
     }
 
-    @McpTool(name= "datetime", description = "gives the current date and time in ms since the epoch")
-    public String currentDateTime() {
-        return "" + System.currentTimeMillis();
+    @McpTool(name= "getCurrentDateTime", description = "Gets the current date and time for a given time zone, presented in a human-readable format. Time zone defaults to UTC if not provided.")
+    public String currentDateTime(@McpToolParam(description = "The time zone for which to get the current date and time. If not provided, it defaults to UTC. The time zone should be a valid time zone ID, such as 'America/New_York' or 'Europe/London'.") final String timezone) {
+        final var zoneId = ZoneId.of(timezone != null && !timezone.trim().isEmpty() ? timezone : "UTC");
+        final var zonedDateTime = ZonedDateTime.now(zoneId);
+        final var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
+        return zonedDateTime.format(formatter);
     }
 
-    @McpTool(name ="echo", description = "echo's what was provided")
-    public String echo(@McpToolParam(description = "value to be echoed") final String value) {
+    @McpTool(name ="echoValue", description = "Returns the same value that was provided as input. Useful for testing and debugging.")
+    public String echo(@McpToolParam(description = "The string value to be returned.") final String value) {
         logger.info("echo called");
         return value;
     }
 
 
-    @McpTool(name = "randomNumbers", description = "provides random numbers in a range")
-    public int randomNumber(@McpToolParam( description = "Origin, the first possible value" ) final int origin,
-                            @McpToolParam(description = "bound, the upper limit") final int bound) {
-        return  rnd.nextInt(origin, bound);
+    @McpTool(name = "getRandomNumber", description = "Generates a random integer within a specified range, from an inclusive origin to an exclusive bound.")
+    public int randomNumber(@McpToolParam( description = "The inclusive lower bound of the random number range. Defaults to 0 if not provided." ) final Integer origin,
+                            @McpToolParam(description = "The exclusive upper bound of the random number range. Defaults to 10 if not provided.") final Integer bound) {
+        final var o = origin != null ? origin : 0;
+        final var b = bound != null ? bound : 10;
+        if (o >= b) {
+            logger.error("Origin {} must be less than bound {}.", o, b);
+            throw new IllegalArgumentException("Origin must be less than bound.");
+        }
+        return  rnd.nextInt(o, b);
     }
 
     //resources
