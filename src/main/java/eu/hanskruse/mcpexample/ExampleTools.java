@@ -38,6 +38,34 @@ public class ExampleTools {
         return value;
     }
 
+    @McpTool(name = "rot13", description = "Encodes a string using the rot13 cipher. Useful for obfuscating text.")
+    public String rot13(@McpToolParam(description = "The string to be encoded. Must only contain printable ASCII characters (ASCII 32-126).") final String value) {
+        if (value == null) {
+            return null;
+        }
+        for (char c : value.toCharArray()) {
+            if (c < 32 || c > 126) {
+                final var errorMessage = String.format("Input must be printable ASCII characters (32-126). Invalid character '%c' in value '%s'", c, value);
+                logger.error(errorMessage);
+                throw new IllegalArgumentException(errorMessage);
+            }
+        }
+        final var sb = new StringBuilder();
+        for (char c : value.toCharArray()) {
+            if (c >= 'a' && c <= 'm') {
+                c += 13;
+            } else if (c >= 'n' && c <= 'z') {
+                c -= 13;
+            } else if (c >= 'A' && c <= 'M') {
+                c += 13;
+            } else if (c >= 'N' && c <= 'Z') {
+                c -= 13;
+            }
+            sb.append(c);
+        }
+        return sb.toString();
+    }
+
 
     @McpTool(name = "getRandomNumber", description = "Generates a random integer within a specified range, from an inclusive origin to an exclusive bound.")
     public int randomNumber(@McpToolParam( description = "The inclusive lower bound of the random number range. Defaults to 0 if not provided." ) final Integer origin,
