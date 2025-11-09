@@ -68,7 +68,7 @@ public class ExampleTools {
 
 
     @McpTool(name = "getRandomNumber", description = "Generates a random integer within a specified range, from an inclusive origin to an exclusive bound.")
-    public int randomNumber(@McpToolParam( description = "The inclusive lower bound of the random number range. Defaults to 0 if not provided." ) final Integer origin,
+    public int randomNumber(@McpToolParam(description = "The inclusive lower bound of the random number range. Defaults to 0 if not provided." ) final Integer origin,
                             @McpToolParam(description = "The exclusive upper bound of the random number range. Defaults to 10 if not provided.") final Integer bound) {
         final var o = origin != null ? origin : 0;
         final var b = bound != null ? bound : 10;
